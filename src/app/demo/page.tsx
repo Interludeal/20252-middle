@@ -2,39 +2,29 @@ import Image from 'next/image'
 import Link from 'next/link'
 
 export default function Demo() {
-  // (디자인 개선) 재활용 가능한 hover 스타일 정의
+  // Tailwind 공통 스타일
   const boxHoverStyle =
     'shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1'
 
   return (
-    // Tailwind CSS 적극 활용
+    // 배경 및 레이아웃
     <div className="bg-white min-h-screen">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 flex items-center justify-center">
         <div className="w-full">
           <div className="mx-auto max-w-5xl">
-            {/* 메인 박스: hover 기능 및 크기 유지 */}
+            {/* {main 박스} */}
             <div
               className={`group bg-white border-2 border-black rounded-2xl ${boxHoverStyle}`}
             >
               <div className="p-8 md:p-12">
                 <div className="grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-10 items-center">
-                  {/* Left: Demo Image Section (md:col-span-2) */}
+                  {/* 사진 */}
                   <div className="md:col-span-2">
-                    {/* 3. 사진 크기, 비율 건들지 않음 */}
                     <div
                       className="w-full max-w-[320px] mx-auto md:mx-0 
                                     h-80 relative overflow-hidden"
                     >
-                      {/* [길이 조절 부분 시작] */}
-                      {/*
-                      - h-80 (고정 높이)는 전체 박스 세로 길이를 유지하기 위해 남겨둡니다. (Tailwind 기준 320px 높이)
-                      */}
-                      {/* [길이 조절 부분 끝] */}
-
-                      {/*
-                        이미지 박스: 이 내부 div에 16:9 비율을 적용하고 중앙에 배치합니다.
-                        - overflow-hidden: 둥근 모서리 밖으로 사진이 튀어나오지 않도록 추가
-                      */}
+                      {/* 사진 비율 */}
                       <div
                         className="relative aspect-video w-full h-auto 
                                       rounded-xl border-2 border-gray-400 overflow-hidden 
@@ -43,15 +33,15 @@ export default function Demo() {
                         <Image
                           src="/demo.png"
                           alt="Clerk-app Demo"
-                          fill // 부모 요소(inner div) 크기를 채우도록 설정
-                          style={{ objectFit: 'cover' }} // 컨테이너를 가득 채우고 좌우 공백 제거
-                          priority
+                          fill
+                          style={{ objectFit: 'cover' }} // 사진 비율 유지
+                          priority // (성능)LCP를 위해 우선 로드하는 기능
                         />
                       </div>
                     </div>
                   </div>
 
-                  {/* Right: Demo Description Section (md:col-span-3) - 3. 글씨 크기/위치 유지 */}
+                  {/* 텍스트 */}
                   <div className="md:col-span-3">
                     <h1 className="text-3xl md:text-4xl font-bold text-black mb-4">
                       Clerk-app Demo
@@ -64,14 +54,13 @@ export default function Demo() {
                       활용하여 강의 중 제작한 예제 프로젝트입니다.
                     </p>
 
-                    {/* 1. Next.js Link 컴포넌트를 최신 문법으로 수정하여 경고 해결 */}
+                    {/* Button */}
                     <div className="flex flex-wrap gap-4">
-                      {/* 데모 보기 버튼 (Link에 직접 target, rel, className 적용) */}
+                      {/* Link, hover 데모보기 */}
                       <Link
                         href="https://clerk-app-lyart.vercel.app/"
                         target="_blank"
                         rel="noopener noreferrer"
-                        // (디자인 개선) 호버 시 링 효과 추가 및 transition 개선
                         className="px-6 py-3 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-all duration-200 flex items-center space-x-2 hover:ring-2 hover:ring-blue-500 hover:ring-opacity-50"
                       >
                         <span>데모 보기</span>
@@ -90,12 +79,11 @@ export default function Demo() {
                         </svg>
                       </Link>
 
-                      {/* 소스코드 버튼 (Link에 직접 target, rel, className 적용) */}
+                      {/* Link, hover, 소스코드 */}
                       <Link
                         href="https://github.com/Interludeal/clerk-app"
                         target="_blank"
                         rel="noopener noreferrer"
-                        // (디자인 개선) 호버 시 링 효과 추가 및 transition 개선
                         className="px-6 py-3 border-2 border-gray-300 text-gray-700 rounded-lg font-medium hover:border-gray-400 hover:bg-gray-50 transition-all duration-200 flex items-center space-x-2 hover:ring-2 hover:ring-gray-300 hover:ring-opacity-50"
                       >
                         <svg
