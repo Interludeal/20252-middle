@@ -1,103 +1,109 @@
-import Image from "next/image";
+import Image from 'next/image' // 1. Next.js Image 컴포넌트 import
 
 export default function Home() {
-  return (
-    <div className="font-sans grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="font-mono list-inside list-decimal text-sm/6 text-center sm:text-left">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] font-mono font-semibold px-1 py-0.5 rounded">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  // 4. (디자인 개선) 재활용 가능한 hover 스타일 정의
+  const boxHoverStyle =
+    'shadow-md hover:shadow-2xl transition-all duration-300 hover:-translate-y-1'
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  return (
+    <div className="bg-white min-h-screen">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20 flex items-center justify-center">
+        <div className="w-full">
+          <div className="mx-auto max-w-5xl">
+            {/* 메인 프로필/설명 박스 */}
+            <div
+              className={`group bg-white border-2 border-black rounded-2xl ${boxHoverStyle}`}
+            >
+              <div className="p-8 md:p-12">
+                <div className="grid grid-cols-1 md:grid-cols-5 gap-8 md:gap-10 items-center">
+                  {/* Left: Image (Next.js Image 컴포넌트 사용) */}
+                  <div className="md:col-span-2">
+                    {/* 1. Next.js Image를 위해 relative 추가. 기존 aspect-square 및 크기 유지 */}
+                    <div className="aspect-square w-full max-w-[320px] mx-auto md:mx-0 rounded-xl border-2 border-gray-400 bg-gray-100 overflow-hidden relative">
+                      <Image
+                        src="/home.png"
+                        alt="웹서버보안프로그래밍 포트폴리오 메인 화면"
+                        fill // 부모 div의 크기를 채우도록 설정 (기존 w-full h-full 유지)
+                        style={{ objectFit: 'cover' }} // 기존 object-cover 유지
+                        priority // (4. 디자인/성능 개선) LCP 개선을 위해 우선 로드
+                      />
+                    </div>
+                  </div>
+
+                  {/* Right: Description (2. 글씨 크기/위치 유지) */}
+                  <div className="md:col-span-3">
+                    <h1 className="text-2xl md:text-3xl font-bold text-black mb-4">
+                      웹서버보안프로그래밍 01분반 정재성
+                    </h1>
+
+                    <p className="text-lg text-gray-700 leading-relaxed mb-6">
+                      해당 페이지는 지금까지 배운{' '}
+                      <strong className="font-semibold">
+                        Next.js 프레임워크
+                      </strong>
+                      를 <br />
+                      이용하여 제작한 간단한 포트폴리오입니다.
+                    </p>
+                    {/* 4. (디자인 개선) 불필요한 <br /> 태그 제거 및 간격 조정 */}
+                    <div className="h-10 md:h-12"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Team info table */}
+            <div className="mt-8 max-w-5xl mx-auto">
+              {/* 3. 아래쪽 박스에도 hover 기능 부여 (boxHoverStyle 적용) */}
+              <div
+                className={`bg-white border-2 border-black rounded-2xl overflow-hidden ${boxHoverStyle}`}
+              >
+                {/* 2. Tailwind CSS 적극 활용: 테이블 경계선 및 행 hover 효과 개선 */}
+                <table className="w-full divide-y divide-gray-300">
+                  <thead className="bg-gray-50">
+                    <tr>
+                      <th className="px-4 py-3 text-left font-semibold text-black w-1/4">
+                        구분
+                      </th>
+                      <th className="px-4 py-3 text-left font-semibold text-black">
+                        이름
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-200">
+                    {/* 4. (디자인 개선) 행 hover 효과 추가 */}
+                    <tr className="hover:bg-gray-50 transition-colors">
+                      <td className="px-4 py-3 font-medium text-black">
+                        {' '}
+                        {/* 2. 텍스트 색상 및 굵기 명확히 설정 */}
+                        팀명
+                      </td>
+                      <td className="px-4 py-3 text-gray-900">동네ON</td>
+                    </tr>
+                    <tr className="hover:bg-gray-50 transition-colors">
+                      <td className="px-4 py-3 font-medium text-black">
+                        {' '}
+                        {/* 2. 텍스트 색상 및 굵기 명확히 설정 */}
+                        팀장
+                      </td>
+                      <td className="px-4 py-3 text-gray-900">정재성</td>
+                    </tr>
+                    <tr className="hover:bg-gray-50 transition-colors">
+                      <td className="px-4 py-3 font-medium text-black">
+                        {' '}
+                        {/* 2. 텍스트 색상 및 굵기 명확히 설정 */}
+                        팀원
+                      </td>
+                      <td className="px-4 py-3 text-gray-900">
+                        곽민경, 박혜수, 심재훈, 정윤서
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+      </div>
     </div>
-  );
+  )
 }
