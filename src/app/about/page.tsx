@@ -4,7 +4,11 @@ import Link from 'next/link'
 const GITHUB_USERNAME = process.env.NEXT_PUBLIC_GITHUB_USERNAME || ''
 const GITHUB_ACCESS_TOKEN = process.env.GITHUB_ACCESS_TOKEN || ''
 
-async function getGitHubData() {
+async function getGitHubData(): Promise<{
+  publicRepos: string
+  profileUrl: string
+  error: boolean
+}> {
   if (!GITHUB_USERNAME) {
     return { publicRepos: 'N/A', profileUrl: 'https://github.com', error: true }
   }
@@ -18,8 +22,11 @@ async function getGitHubData() {
     })
 
     if (!res.ok) {
-      const data = await res.json()
-      throw new Error(data.message || 'Failed to fetch user data')
+      return {
+        publicRepos: '로드 오류',
+        profileUrl: `https://github.com/${GITHUB_USERNAME}`,
+        error: true,
+      }
     }
 
     const data = await res.json()
@@ -28,7 +35,7 @@ async function getGitHubData() {
       profileUrl: data.html_url || `https://github.com/${GITHUB_USERNAME}`,
       error: false,
     }
-  } catch (e) {
+  } catch (error) {
     return {
       publicRepos: '로드 실패',
       profileUrl: `https://github.com/${GITHUB_USERNAME}`,
@@ -37,12 +44,14 @@ async function getGitHubData() {
   }
 }
 
-async function getGithubRepos() {
+async function getGithubRepos(): Promise<
+  { id: number; name: string; description: string; url: string }[]
+> {
   if (!GITHUB_USERNAME) return []
 
   try {
     const res = await fetch(
-      `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=9`,
+      `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=10`,
       {
         headers: {
           Authorization: `token ${GITHUB_ACCESS_TOKEN}`,
@@ -57,14 +66,21 @@ async function getGithubRepos() {
     }
 
     const repos = await res.json()
-    return repos.map((repo: any) => ({
-      id: repo.id,
-      name: repo.name,
-      description: repo.description,
-      url: repo.html_url,
-    }))
-  } catch (e) {
-    console.error('Error fetching GitHub repos:', e)
+    return repos.map(
+      (repo: {
+        id: number
+        name: string
+        description: string
+        html_url: string
+      }) => ({
+        id: repo.id,
+        name: repo.name,
+        description: repo.description,
+        url: repo.html_url,
+      })
+    )
+  } catch (error) {
+    console.error('Error fetching GitHub repos:', error)
     return []
   }
 }
@@ -218,34 +234,13 @@ const rightColumn = [
   experienceData[7],
 ]
 
-const dummyRepos = [
-  {
-    id: 1,
-    name: 'Portfolio-Nextjs-V2',
-    description:
-      '현재 보고 계신 포트폴리오 웹사이트입니다. (Next.js & Tailwind)',
-    url: 'https://github.com/Interludeal/portfolio-v2',
-  },
-  {
-    id: 2,
-    name: 'Clerk-App',
-    description: 'Next.js 프레임워크 학습용 프로젝트.',
-    url: 'https://github.com/Interludeal/clerk-app',
-  },
-  {
-    id: 3,
-    name: 'CTF-Writeups',
-    description: '보안 문제 풀이 기록 저장소.',
-    url: 'https://github.com/Interludeal/ctf-writeups',
-  },
-]
-
-const GithubIcon = (props: any) => (
+const GithubIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg {...props} className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
     <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
   </svg>
 )
-const TistoryIcon = (props: any) => (
+
+const TistoryIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     {...props}
     viewBox="0 0 24 24"
@@ -268,7 +263,8 @@ const TistoryIcon = (props: any) => (
     <circle cx="12" cy="17" r="1.5" fill="#fff" />
   </svg>
 )
-const InstagramIcon = (props: any) => (
+
+const InstagramIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
     {...props}
     xmlns="http://www.w3.org/2000/svg"
@@ -286,12 +282,14 @@ const InstagramIcon = (props: any) => (
     <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
   </svg>
 )
+
 const ExperienceItem = ({ title, date }: { title: string; date: string }) => (
   <div className="flex justify-between items-center p-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 hover:border-blue-400 hover:shadow-md transition-colors duration-200">
     <span className="text-black font-semibold text-sm mr-2">{title}</span>
     <span className="text-gray-700 text-xs flex-shrink-0">{date}</span>
   </div>
 )
+
 const TechIcon = ({
   src,
   alt,
@@ -313,6 +311,7 @@ const TechIcon = ({
     />
   </div>
 )
+
 const RepoCard = ({
   name,
   description,
@@ -652,8 +651,7 @@ export default async function About() {
                 </h2>
                 <div className="flex justify-between items-center mb-4">
                   <p className="text-md text-gray-700 leading-relaxed">
-                    " 강의 중 배운 Github api를 활용하여, 제 Github
-                    (Interludeal)와 연결하였습니다. "
+                    강의 중 배운 Github api를 활용했습니다.
                   </p>
                   <Link
                     href={githubData.profileUrl}
@@ -668,7 +666,7 @@ export default async function About() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                   {repos.length > 0 ? (
-                    repos.map((repo: any) => (
+                    repos.map((repo) => (
                       <RepoCard
                         key={repo.id}
                         name={repo.name}
@@ -684,16 +682,13 @@ export default async function About() {
                   )}
                 </div>
                 {githubData.error && (
-                  <p className="text-sm text-red-500 mt-4">
-                    *API 연결 오류: 환경 변수(`.env`)와 토큰 권한을
-                    확인해주세요.
-                  </p>
+                  <p className="text-sm text-red-500 mt-4">-</p>
                 )}
               </div>
 
               <p className="text-center text-2xl font-bold text-black italic">
                 <span className="cursor-pointer hover:text-blue-600 transition-colors duration-300">
-                  "Act as if you have already achieved"
+                  Act as if you have already achieved
                 </span>
               </p>
             </div>
