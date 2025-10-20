@@ -1,193 +1,344 @@
 import Image from 'next/image'
+import Link from 'next/link'
 
-export default function About() {
-  // Tailwind 공통 스타일(hover)
+const GITHUB_USERNAME = process.env.NEXT_PUBLIC_GITHUB_USERNAME || ''
+const GITHUB_ACCESS_TOKEN = process.env.GITHUB_ACCESS_TOKEN || ''
+
+async function getGitHubData() {
+  if (!GITHUB_USERNAME) {
+    return { publicRepos: 'N/A', profileUrl: 'https://github.com', error: true }
+  }
+
+  try {
+    const res = await fetch(`https://api.github.com/users/${GITHUB_USERNAME}`, {
+      headers: {
+        Authorization: `token ${GITHUB_ACCESS_TOKEN}`,
+      },
+      next: { revalidate: 3600 },
+    })
+
+    if (!res.ok) {
+      const data = await res.json()
+      throw new Error(data.message || 'Failed to fetch user data')
+    }
+
+    const data = await res.json()
+    return {
+      publicRepos: data.public_repos?.toLocaleString() || '0',
+      profileUrl: data.html_url || `https://github.com/${GITHUB_USERNAME}`,
+      error: false,
+    }
+  } catch (e) {
+    return {
+      publicRepos: '로드 실패',
+      profileUrl: `https://github.com/${GITHUB_USERNAME}`,
+      error: true,
+    }
+  }
+}
+
+async function getGithubRepos() {
+  if (!GITHUB_USERNAME) return []
+
+  try {
+    const res = await fetch(
+      `https://api.github.com/users/${GITHUB_USERNAME}/repos?sort=updated&per_page=9`,
+      {
+        headers: {
+          Authorization: `token ${GITHUB_ACCESS_TOKEN}`,
+        },
+        next: { revalidate: 3600 },
+      }
+    )
+
+    if (!res.ok) {
+      console.error(`Failed to fetch repositories: ${res.status}`)
+      return []
+    }
+
+    const repos = await res.json()
+    return repos.map((repo: any) => ({
+      id: repo.id,
+      name: repo.name,
+      description: repo.description,
+      url: repo.html_url,
+    }))
+  } catch (e) {
+    console.error('Error fetching GitHub repos:', e)
+    return []
+  }
+}
+
+const experienceData = [
+  { title: '정보보안 동아리 S.C.P 2025 임원', date: '2025.09' },
+  { title: '2024 제12회 창업경진대회 참여 및 입상', date: '2024.03' },
+  { title: '2025 사이버공격방어대회(CCE) CTF 참여', date: '2025.08' },
+  { title: '제 3회 JBU-CTF 문제 출제', date: '2022.10' },
+  { title: '2025 핵테온 세종 CTF 참여', date: '2025.04' },
+  { title: '정보보안 동아리 S.C.P 활동', date: '2022.04' },
+  { title: '육군 병장 만기전역', date: '2024.09' },
+  { title: '중부대학교 정보보호학전공 입학', date: '2022.03 ' },
+]
+
+const webProjects = [
+  <>
+    <strong className="font-semibold">CVE-2023-50447 분석</strong> :{' '}
+    <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
+      ImageMath
+    </span>{' '}
+    모듈의 취약점이{' '}
+    <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
+      dunder 체인
+    </span>{' '}
+    공격을 통해 악용될 수 있음을 알고 PoC 해석을 토대로 CTF 문제 풀이를
+    진행하였습니다.
+  </>,
+  <>
+    <strong className="font-semibold">PHP +MySQL 게시판 모의해킹</strong> : 직접
+    환경 구축을 하며{' '}
+    <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
+      DB
+    </span>{' '}
+    이해력을 올리고, 웹 취약점을 토대로{' '}
+    <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
+      모의해킹
+    </span>
+    을 하며 방어 로직을 짜는 실습을 진행했습니다.
+  </>,
+  <>
+    <strong className="font-semibold">Shadow API</strong> :
+    <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
+      API
+    </span>{' '}
+    기본 공부 후, 직접 구현한{' '}
+    <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
+      Node.js
+    </span>
+    서버 에서{' '}
+    <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
+      Burp Suite{' '}
+    </span>
+    를 활용하여 로그 탈취 방어 실습을 진행했습니다.
+  </>,
+  <>
+    <strong className="font-semibold">HTTP Desync Attacks</strong> : HTTP 요청{' '}
+    <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
+      파싱 불일치
+    </span>
+    경우를{' '}
+    <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
+      Nginx
+    </span>{' '}
+    Proxy 로 구현하고{' '}
+    <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
+      Flask
+    </span>{' '}
+    서버 보호 로직을 짜보며 실습을 진행했습니다.
+  </>,
+  <>
+    <strong className="font-semibold">URL Redirection</strong> :{' '}
+    <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
+      Open Redirection
+    </span>{' '}
+    취약점과 피싱 공격 연계 위험성을 알고{' '}
+    <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
+      Flask
+    </span>{' '}
+    기반의 공격 및 방어 실습을 진행했습니다.
+  </>,
+]
+
+const otherProjects = [
+  <>
+    <strong className="font-semibold">Fire Wall / Spoofing</strong> : Dos,
+    스니핑/스푸핑 위험을 알고{' '}
+    <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
+      프로토콜
+    </span>
+    역할을 공부하여{' '}
+    <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
+      VPN
+    </span>
+    으로 네트워크 보호 실습을 하였습니다.
+  </>,
+  <>
+    <strong className="font-semibold">LCA 알고리즘</strong> : 트리 구조에서
+    <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
+      LCA
+    </span>
+    를 찾는 알고리즘을 구현하여{' '}
+    <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
+      이진 리프팅
+    </span>{' '}
+    을 이해하였습니다.
+  </>,
+  <>
+    <strong className="font-semibold">Abstract Data Type</strong> : push/pop
+    연산을 알고 더 나아가{' '}
+    <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
+      LIFO, FIFO
+    </span>
+    구조 를 이해하고 실제로 구현해보았습니다.
+  </>,
+  <>
+    <strong className="font-semibold">Python Board Game 구현</strong> : 플레이어
+    관리, 턴 기반 진행,{' '}
+    <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
+      매트릭스 기반
+    </span>{' '}
+    게임 보드를 구축해보며{' '}
+    <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
+      Python
+    </span>{' '}
+    활용 능력을 높였습니다.
+  </>,
+  <>
+    <strong className="font-semibold">DevOps CI/CD 파이프라인 구축</strong> :{' '}
+    <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
+      DevOps
+    </span>
+    문화와{' '}
+    <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
+      Cloud
+    </span>
+    지식을 쌓고 개발부터 배포, 운영 자동화 과정을 진행 중입니다.
+  </>,
+]
+
+const leftColumn = [
+  experienceData[0],
+  experienceData[2],
+  experienceData[4],
+  experienceData[6],
+]
+const rightColumn = [
+  experienceData[1],
+  experienceData[3],
+  experienceData[5],
+  experienceData[7],
+]
+
+const dummyRepos = [
+  {
+    id: 1,
+    name: 'Portfolio-Nextjs-V2',
+    description:
+      '현재 보고 계신 포트폴리오 웹사이트입니다. (Next.js & Tailwind)',
+    url: 'https://github.com/Interludeal/portfolio-v2',
+  },
+  {
+    id: 2,
+    name: 'Clerk-App',
+    description: 'Next.js 프레임워크 학습용 프로젝트.',
+    url: 'https://github.com/Interludeal/clerk-app',
+  },
+  {
+    id: 3,
+    name: 'CTF-Writeups',
+    description: '보안 문제 풀이 기록 저장소.',
+    url: 'https://github.com/Interludeal/ctf-writeups',
+  },
+]
+
+const GithubIcon = (props: any) => (
+  <svg {...props} className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+  </svg>
+)
+const TistoryIcon = (props: any) => (
+  <svg
+    {...props}
+    viewBox="0 0 24 24"
+    fill="currentColor"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <rect
+      x="2"
+      y="2"
+      width="20"
+      height="20"
+      rx="5"
+      ry="5"
+      fill="rgb(239 68 68)"
+    />
+    <circle cx="12" cy="7" r="1.5" fill="#fff" />
+    <circle cx="8" cy="7" r="1.5" fill="#fff" />
+    <circle cx="16" cy="7" r="1.5" fill="#fff" />
+    <circle cx="12" cy="12" r="1.5" fill="#fff" />
+    <circle cx="12" cy="17" r="1.5" fill="#fff" />
+  </svg>
+)
+const InstagramIcon = (props: any) => (
+  <svg
+    {...props}
+    xmlns="http://www.w3.org/2000/svg"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
+    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
+    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
+  </svg>
+)
+const ExperienceItem = ({ title, date }: { title: string; date: string }) => (
+  <div className="flex justify-between items-center p-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 hover:border-blue-400 hover:shadow-md transition-colors duration-200">
+    <span className="text-black font-semibold text-sm mr-2">{title}</span>
+    <span className="text-gray-700 text-xs flex-shrink-0">{date}</span>
+  </div>
+)
+const TechIcon = ({
+  src,
+  alt,
+  w = 64,
+  h = 64,
+}: {
+  src: string
+  alt: string
+  w?: number
+  h?: number
+}) => (
+  <div className="flex items-center justify-center w-24 h-24 p-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-100 hover:border-blue-400 hover:shadow-md transition-colors duration-200">
+    <Image
+      src={src}
+      alt={alt}
+      width={w}
+      height={h}
+      className="object-contain"
+    />
+  </div>
+)
+const RepoCard = ({
+  name,
+  description,
+  url,
+}: {
+  name: string
+  description: string
+  url: string
+}) => (
+  <Link
+    href={url}
+    target="_blank"
+    rel="noopener noreferrer"
+    className="block p-4 border border-gray-300 rounded-lg bg-white hover:border-blue-400 hover:shadow-lg transition-all duration-300"
+  >
+    <h4 className="font-bold text-black mb-1 truncate">{name}</h4>
+    <p className="text-sm text-gray-700 line-clamp-2">{description}</p>
+  </Link>
+)
+
+export default async function About() {
+  const githubData = await getGitHubData()
+  const repos = await getGithubRepos()
+
   const hoverStyle =
     'hover:shadow-2xl hover:-translate-y-1 transition-all duration-300'
-
-  // 학력 및 경력 박스
-  const experienceData = [
-    { title: '정보보안 동아리 S.C.P 2025 임원', date: '2025.09' },
-    { title: '2024 제12회 창업경진대회 참여 및 입상', date: '2024.03' },
-    { title: '2025 사이버공격방어대회(CCE) CTF 참여', date: '2025.08' },
-    { title: '제 3회 JBU-CTF 문제 출제', date: '2022.10' },
-    { title: '2025 핵테온 세종 CTF 참여', date: '2025.04' },
-    { title: '정보보안 동아리 S.C.P 활동', date: '2022.04' },
-    { title: '육군 병장 만기전역', date: '2024.09' },
-    { title: '중부대학교 정보보호학전공 입학', date: '2022.03 ' },
-  ]
-
-  // 개인 프로젝트(web 분야)
-  const webProjects = [
-    <>
-      <strong className="font-semibold">CVE-2023-50447 분석</strong> :{' '}
-      <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
-        ImageMath
-      </span>{' '}
-      모듈의 취약점이{' '}
-      <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
-        dunder 체인
-      </span>{' '}
-      공격을 통해 악용될 수 있음을 알고 PoC 해석을 토대로 CTF 문제 풀이를
-      진행하였습니다.
-    </>,
-    <>
-      <strong className="font-semibold">PHP +MySQL 게시판 모의해킹</strong> :
-      직접 환경 구축을 하며{' '}
-      <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
-        DB
-      </span>{' '}
-      이해력을 올리고, 웹 취약점을 토대로{' '}
-      <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
-        모의해킹
-      </span>
-      을 하며 방어 로직을 짜는 실습을 진행했습니다.
-    </>,
-    <>
-      <strong className="font-semibold">Shadow API</strong> :
-      <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
-        API
-      </span>{' '}
-      기본 공부 후, 직접 구현한{' '}
-      <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
-        Node.js
-      </span>
-      서버 에서{' '}
-      <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
-        Burp Suite{' '}
-      </span>
-      를 활용하여 로그 탈취 방어 실습을 진행했습니다.
-    </>,
-    <>
-      <strong className="font-semibold">HTTP Desync Attacks</strong> : HTTP 요청{' '}
-      <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
-        파싱 불일치
-      </span>
-      경우를{' '}
-      <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
-        Nginx
-      </span>{' '}
-      Proxy 로 구현하고{' '}
-      <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
-        Flask
-      </span>{' '}
-      서버 보호 로직을 짜보며 실습을 진행했습니다.
-    </>,
-    <>
-      <strong className="font-semibold">URL Redirection</strong> :{' '}
-      <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
-        Open Redirection
-      </span>{' '}
-      취약점과 피싱 공격 연계 위험성을 알고{' '}
-      <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
-        Flask
-      </span>{' '}
-      기반의 공격 및 방어 실습을 진행했습니다.
-    </>,
-  ]
-
-  // 개인 프로젝트(기타)
-  const otherProjects = [
-    <>
-      <strong className="font-semibold">Fire Wall / Spoofing</strong> : Dos,
-      스니핑/스푸핑 위험을 알고{' '}
-      <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
-        프로토콜
-      </span>
-      역할을 공부하여{' '}
-      <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
-        VPN
-      </span>
-      으로 네트워크 보호 실습을 하였습니다.
-    </>,
-    <>
-      <strong className="font-semibold">LCA 알고리즘</strong> : 트리 구조에서
-      <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
-        LCA
-      </span>
-      를 찾는 알고리즘을 구현하여{' '}
-      <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
-        이진 리프팅
-      </span>{' '}
-      을 이해하였습니다.
-    </>,
-    <>
-      <strong className="font-semibold">Abstract Data Type</strong> : push/pop
-      연산을 알고 더 나아가{' '}
-      <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
-        LIFO, FIFO
-      </span>
-      구조 를 이해하고 실제로 구현해보았습니다.
-    </>,
-    <>
-      <strong className="font-semibold">Python Board Game 구현</strong> :
-      플레이어 관리, 턴 기반 진행,{' '}
-      <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
-        매트릭스 기반
-      </span>{' '}
-      게임 보드를 구축해보며{' '}
-      <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
-        Python
-      </span>{' '}
-      활용 능력을 높였습니다.
-    </>,
-    <>
-      <strong className="font-semibold">DevOps CI/CD 파이프라인 구축</strong> :{' '}
-      <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
-        DevOps
-      </span>
-      문화와{' '}
-      <span className="inline-block bg-gray-200 px-1 rounded text-xs font-medium text-gray-800">
-        Cloud
-      </span>
-      지식을 쌓고 개발부터 배포, 운영 자동화 과정을 진행 중입니다.
-    </>,
-  ]
-
-  // 학력 및 경력 박스 렌더링 컴포넌트
-  const ExperienceItem = ({ title, date }: { title: string; date: string }) => (
-    <div className="flex justify-between items-center p-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 transition-colors duration-200">
-      <span className="text-black font-semibold text-sm mr-2">{title}</span>
-      <span className="text-gray-700 text-xs flex-shrink-0">{date}</span>
-    </div>
-  )
-
-  // 학력 및 경력 박스 좌/우 분리
-  const leftColumn = [
-    experienceData[0],
-    experienceData[2],
-    experienceData[4],
-    experienceData[6],
-  ]
-  const rightColumn = [
-    experienceData[1],
-    experienceData[3],
-    experienceData[5],
-    experienceData[7],
-  ]
-
-  // 기술 스택 박스 컴포넌트
-  const TechIcon = ({
-    src,
-    alt,
-    w = 64,
-    h = 64,
-  }: {
-    src: string
-    alt: string
-    w?: number
-    h?: number
-  }) => (
-    <div className="flex items-center justify-center w-24 h-24 p-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-100 transition-colors duration-200">
-      <Image
-        src={src}
-        alt={alt}
-        width={w}
-        height={h}
-        className="object-contain"
-      />
-    </div>
-  )
 
   return (
     <div className="bg-white min-h-screen">
@@ -195,13 +346,11 @@ export default function About() {
         <div className="w-full">
           <div className="mx-auto max-w-5xl">
             <div className="space-y-8">
-              {/* 프로필 박스 */}
               <div
-                className={`bg-white border-2 border-black rounded-2xl p-8 shadow-md ${hoverStyle}`}
+                className={`bg-white border-2 border-black rounded-2xl p-8 ${hoverStyle}`}
               >
                 <h2 className="text-2xl font-bold text-black mb-6">프로필</h2>
                 <div className="flex items-start space-x-8">
-                  {/* 프로필 박스 이미지 */}
                   <div className="w-32 h-40 border-2 border-gray-400 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                     <Image
                       src="/about.png"
@@ -209,11 +358,10 @@ export default function About() {
                       width={128}
                       height={160}
                       className="w-full h-full object-cover"
-                      priority // LCP
+                      priority
                     />
                   </div>
 
-                  {/* 텍스트 */}
                   <div className="flex-1 min-w-0">
                     <div className="mb-4">
                       <h3 className="text-2xl font-bold text-black inline-block mr-2">
@@ -224,7 +372,6 @@ export default function About() {
                       </span>
                     </div>
 
-                    {/* 텍스트) */}
                     <div className="text-lg text-gray-800 mb-6 grid grid-cols-1 sm:grid-cols-2 gap-y-3 gap-x-4">
                       <p>
                         <strong>생년월일:</strong>{' '}
@@ -252,7 +399,6 @@ export default function About() {
                       </p>
                     </div>
 
-                    {/* 프로필 박스 속 표 */}
                     <div className="border border-gray-300 rounded-lg overflow-hidden mb-6">
                       <div className="grid grid-cols-4 divide-x divide-gray-300 text-center text-sm">
                         <div className="p-2 border-b border-gray-300 bg-gray-50 font-semibold text-black">
@@ -285,7 +431,6 @@ export default function About() {
                       </div>
                     </div>
 
-                    {/* Github Button */}
                     <div className="mt-6 flex space-x-4 justify-end">
                       <a
                         href="https://github.com/Interludeal"
@@ -295,7 +440,6 @@ export default function About() {
                       >
                         <GithubIcon className="w-6 h-6" />
                       </a>
-                      {/* Tistory Button */}
                       <a
                         href="https://interludeal.tistory.com/"
                         target="_blank"
@@ -304,7 +448,6 @@ export default function About() {
                       >
                         <TistoryIcon className="w-6 h-6 text-red-600" />
                       </a>
-                      {/* Instagram Button */}
                       <a
                         href="https://www.instagram.com/jaexxeong_bsns"
                         target="_blank"
@@ -318,7 +461,6 @@ export default function About() {
                 </div>
               </div>
 
-              {/* 2. 관심 분야 박스 */}
               <div
                 className={`bg-white border-2 border-black rounded-2xl p-8 shadow-md ${hoverStyle}`}
               >
@@ -326,19 +468,18 @@ export default function About() {
                   관심 분야
                 </h2>
                 <div className="space-y-4">
-                  <div className="bg-white border border-gray-300 rounded-lg p-4 text-black font-semibold hover:bg-gray-50 transition-colors duration-300">
+                  <div className="bg-white border border-gray-300 rounded-lg p-4 text-black font-semibold hover:bg-gray-50 hover:border-blue-400 hover:shadow-md transition-colors duration-300">
                     웹 해킹 / 보안
                   </div>
-                  <div className="bg-white border border-gray-300 rounded-lg p-4 text-black font-semibold hover:bg-gray-50 transition-colors duration-300">
+                  <div className="bg-white border border-gray-300 rounded-lg p-4 text-black font-semibold hover:bg-gray-50 hover:border-blue-400 hover:shadow-md transition-colors duration-300">
                     다양히 하고 싶어하는 편
                   </div>
-                  <div className="bg-white border border-gray-300 rounded-lg p-4 text-black font-semibold hover:bg-gray-50 transition-colors duration-300">
+                  <div className="bg-white border border-gray-300 rounded-lg p-4 text-black font-semibold hover:bg-gray-50 hover:border-blue-400 hover:shadow-md transition-colors duration-300">
                     네트워크, 클라우드, 개발 등
                   </div>
                 </div>
               </div>
 
-              {/* 학력 및 경력 섹션 */}
               <div
                 className={`bg-white border-2 border-black rounded-2xl p-8 shadow-md ${hoverStyle}`}
               >
@@ -369,7 +510,6 @@ export default function About() {
                 </div>
               </div>
 
-              {/* 기술 스택 섹션 */}
               <div
                 className={`bg-white border-2 border-black rounded-2xl p-8 shadow-md ${hoverStyle}`}
               >
@@ -377,7 +517,6 @@ export default function About() {
                   기술 스택
                 </h2>
                 <div className="space-y-6">
-                  {/* Language */}
                   <div>
                     <h3 className="text-lg font-semibold text-black mb-3">
                       Language
@@ -394,7 +533,6 @@ export default function About() {
                     </div>
                   </div>
 
-                  {/* Frontend */}
                   <div>
                     <h3 className="text-lg font-semibold text-black mb-3">
                       Frontend
@@ -423,7 +561,6 @@ export default function About() {
                     </div>
                   </div>
 
-                  {/* Backend */}
                   <div>
                     <h3 className="text-lg font-semibold text-black mb-3">
                       Backend
@@ -444,7 +581,6 @@ export default function About() {
                     </div>
                   </div>
 
-                  {/* Other */}
                   <div>
                     <h3 className="text-lg font-semibold text-black mb-3">
                       Other
@@ -468,7 +604,6 @@ export default function About() {
                 </div>
               </div>
 
-              {/* 개인 프로젝트 섹션 */}
               <div
                 className={`bg-white border-2 border-black rounded-2xl p-8 shadow-md ${hoverStyle}`}
               >
@@ -484,7 +619,7 @@ export default function About() {
                       {webProjects.map((project, index) => (
                         <li
                           key={`web-${index}`}
-                          className="border border-gray-200 bg-gray-50 rounded-md p-3 text-sm hover:bg-gray-100 transition-colors duration-200"
+                          className="border border-gray-200 bg-gray-50 rounded-md p-3 text-sm hover:bg-gray-100 hover:border-blue-400 hover:shadow-md transition-colors duration-200"
                         >
                           {project}
                         </li>
@@ -499,7 +634,7 @@ export default function About() {
                       {otherProjects.map((project, index) => (
                         <li
                           key={`other-${index}`}
-                          className="border border-gray-200 bg-gray-50 rounded-md p-3 text-sm hover:bg-gray-100 transition-colors duration-200"
+                          className="border border-gray-200 bg-gray-50 rounded-md p-3 text-sm hover:bg-gray-100 hover:border-blue-400 hover:shadow-md transition-colors duration-200"
                         >
                           {project}
                         </li>
@@ -509,7 +644,53 @@ export default function About() {
                 </div>
               </div>
 
-              {/* 좌우명(하단) */}
+              <div
+                className={`bg-white border-2 border-black rounded-2xl p-8 shadow-md ${hoverStyle}`}
+              >
+                <h2 className="text-2xl font-bold text-black mb-6 flex items-center space-x-2">
+                  <span className="text-gray-800">GitHub Repositories</span>
+                </h2>
+                <div className="flex justify-between items-center mb-4">
+                  <p className="text-md text-gray-700 leading-relaxed">
+                    " 강의 중 배운 Github api를 활용하여, 제 Github
+                    (Interludeal)와 연결하였습니다. "
+                  </p>
+                  <Link
+                    href={githubData.profileUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center space-x-1 text-blue-600 hover:text-blue-800 transition-colors font-medium ml-4 flex-shrink-0"
+                  >
+                    <span>프로필 보기</span>
+                    <GithubIcon className="w-4 h-4 flex-shrink-0" />
+                  </Link>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {repos.length > 0 ? (
+                    repos.map((repo: any) => (
+                      <RepoCard
+                        key={repo.id}
+                        name={repo.name}
+                        description={repo.description || '설명 없음'}
+                        url={repo.url}
+                      />
+                    ))
+                  ) : (
+                    <p className="text-gray-500">
+                      리포지토리를 불러오는 중이거나 표시할 리포지토리가
+                      없습니다.
+                    </p>
+                  )}
+                </div>
+                {githubData.error && (
+                  <p className="text-sm text-red-500 mt-4">
+                    *API 연결 오류: 환경 변수(`.env`)와 토큰 권한을
+                    확인해주세요.
+                  </p>
+                )}
+              </div>
+
               <p className="text-center text-2xl font-bold text-black italic">
                 <span className="cursor-pointer hover:text-blue-600 transition-colors duration-300">
                   "Act as if you have already achieved"
@@ -522,91 +703,3 @@ export default function About() {
     </div>
   )
 }
-
-// 유틸리티 컴포넌트 정의
-
-// 학력및 경력 박스 렌더링 컴포넌트
-const ExperienceItem = ({ title, date }: { title: string; date: string }) => (
-  <div className="flex justify-between items-center p-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-50 transition-colors duration-200">
-    <span className="text-black font-semibold text-sm mr-2">{title}</span>
-    <span className="text-gray-700 text-xs flex-shrink-0">{date}</span>
-  </div>
-)
-
-// 기술 스택 아이콘 컴포넌트
-const TechIcon = ({
-  src,
-  alt,
-  w = 64,
-  h = 64,
-}: {
-  src: string
-  alt: string
-  w?: number
-  h?: number
-}) => (
-  // 기술 스택 아이콘 크기 정렬
-  <div className="flex items-center justify-center w-24 h-24 p-3 border border-gray-300 rounded-lg bg-white hover:bg-gray-100 transition-colors duration-200">
-    <Image
-      src={src}
-      alt={alt}
-      width={w}
-      height={h}
-      className="object-contain"
-    />
-  </div>
-)
-
-// SVG Github
-const GithubIcon = (props: any) => (
-  <svg {...props} className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-  </svg>
-)
-
-// SVG Tistory
-const TistoryIcon = (props: any) => (
-  <svg
-    {...props}
-    viewBox="0 0 24 24"
-    fill="currentColor"
-    xmlns="http://www.w3.org/2000/svg"
-  >
-    {/* 배경 */}
-    <rect
-      x="2"
-      y="2"
-      width="20"
-      height="20"
-      rx="5"
-      ry="5"
-      fill="rgb(239 68 68)"
-    />
-    {/* T */}
-    <circle cx="12" cy="7" r="1.5" fill="#fff" />
-    <circle cx="8" cy="7" r="1.5" fill="#fff" />
-    <circle cx="16" cy="7" r="1.5" fill="#fff" />
-    <circle cx="12" cy="12" r="1.5" fill="#fff" />
-    <circle cx="12" cy="17" r="1.5" fill="#fff" />
-  </svg>
-)
-
-// SVG Instagram
-const InstagramIcon = (props: any) => (
-  <svg
-    {...props}
-    xmlns="http://www.w3.org/2000/svg"
-    width="24"
-    height="24"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <rect width="20" height="20" x="2" y="2" rx="5" ry="5" />
-    <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z" />
-    <line x1="17.5" x2="17.51" y1="6.5" y2="6.5" />
-  </svg>
-)

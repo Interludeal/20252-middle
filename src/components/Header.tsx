@@ -16,13 +16,9 @@ export default function Header() {
   ]
 
   return (
-    // 1. 'sticky top-0 z-50' 유지
-    // 2. 'bg-white'를 'bg-white/95'로 변경하거나 'bg-white opacity-95'로 변경 (Tailwind 3.2+ 권장)
-    //    여기서는 bg-white와 opacity-95를 사용하고, z-50 위에 shadow-lg로 강조합니다.
     <header className="bg-white border-b-2 border-black sticky top-0 z-50 shadow-lg opacity-95 backdrop-blur-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
-          {/* Logo/Brand */}
           <div className="flex-shrink-0">
             <Link
               href="/"
@@ -32,7 +28,6 @@ export default function Header() {
             </Link>
           </div>
 
-          {/* Navigation */}
           <nav className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-8">
               {navItems.map((item) => (
@@ -51,7 +46,6 @@ export default function Header() {
             </div>
           </nav>
 
-          {/* Mobile menu button */}
           <div className="md:hidden">
             <button
               type="button"
@@ -75,7 +69,6 @@ export default function Header() {
           </div>
         </div>
 
-        {/* Mobile Navigation */}
         <div className="md:hidden">
           <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
             {navItems.map((item) => (
