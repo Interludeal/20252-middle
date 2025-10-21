@@ -1,11 +1,9 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
-// === 환경 변수 설정 ===
 const GITHUB_USERNAME = process.env.NEXT_PUBLIC_GITHUB_USERNAME || ''
 const GITHUB_ACCESS_TOKEN = process.env.GITHUB_ACCESS_TOKEN || ''
 
-// === GitHub API 호출 로직 ===
 async function getGitHubData(): Promise<{
   publicRepos: string
   profileUrl: string
@@ -87,7 +85,6 @@ async function getGithubRepos(): Promise<
   }
 }
 
-// === 데이터 구조 정의 (생략) ===
 const experienceData = [
   { title: '정보보안 동아리 S.C.P 2025 임원', date: '2025.09' },
   { title: '2024 제12회 창업경진대회 참여 및 입상', date: '2024.03' },
@@ -236,8 +233,6 @@ const rightColumn = [
   experienceData[5],
   experienceData[7],
 ]
-
-// === 유틸리티 컴포넌트 ===
 
 const GithubIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg {...props} className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -521,26 +516,22 @@ export default async function About() {
                   기술 스택
                 </h2>
                 <div className="space-y-6">
-                  {/* Language */}
                   <div>
                     <h3 className="text-lg font-semibold text-black mb-3">
                       Language
                     </h3>
                     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                      {/* 경로 대소문자 수정 */}
                       <TechIcon src="/tech/C.png" alt="C" w={64} h={64} />
                       <TechIcon src="/tech/PHP.png" alt="PHP" w={72} h={72} />
                       <TechIcon src="/tech/PY.png" alt="PY" w={64} h={64} />
                     </div>
                   </div>
 
-                  {/* Frontend */}
                   <div>
                     <h3 className="text-lg font-semibold text-black mb-3">
                       Frontend
                     </h3>
                     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                      {/* 경로 대소문자 수정 */}
                       <TechIcon src="/tech/HTML.png" alt="HTML" w={64} h={64} />
                       <TechIcon src="/tech/CSS.png" alt="CSS" w={64} h={64} />
                       <TechIcon src="/tech/JS.png" alt="JS" w={64} h={64} />
@@ -559,13 +550,11 @@ export default async function About() {
                     </div>
                   </div>
 
-                  {/* Backend */}
                   <div>
                     <h3 className="text-lg font-semibold text-black mb-3">
                       Backend
                     </h3>
                     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                      {/* 경로 대소문자 수정 */}
                       <TechIcon
                         src="/tech/NODEJS.png"
                         alt="NODEJS"
@@ -576,20 +565,13 @@ export default async function About() {
                     </div>
                   </div>
 
-                  {/* Other */}
                   <div>
                     <h3 className="text-lg font-semibold text-black mb-3">
                       Other
                     </h3>
                     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                      {/* 경로 대소문자 수정 */}
                       <TechIcon src="/tech/GCP.png" alt="GCP" w={72} h={72} />
-                      <TechIcon
-                        src="/tech/MYSQL.png"
-                        alt="MYSQL"
-                        w={72}
-                        h={72}
-                      />
+                      <TechIcon src="/tech/MY.png" alt="MY" w={72} h={72} />
                       <TechIcon src="/tech/UNI.png" alt="UNI" w={72} h={72} />
                     </div>
                   </div>
