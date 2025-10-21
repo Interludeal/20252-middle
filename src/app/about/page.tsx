@@ -357,8 +357,8 @@ export default async function About() {
                 <div className="flex items-start space-x-8">
                   <div className="w-32 h-40 border-2 border-gray-400 rounded-lg overflow-hidden bg-gray-100 flex-shrink-0">
                     <Image
-                      src="/about.png"
-                      alt="프로필 사진"
+                      src="/team/interludeal.png"
+                      alt=""
                       width={128}
                       height={160}
                       className="w-full h-full object-cover"
@@ -546,23 +546,13 @@ export default async function About() {
                     </h3>
                     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                       {/* 경로 대소문자 수정 */}
-                      <TechIcon src="/tech/html.png" alt="HTML" w={64} h={64} />
-                      <TechIcon src="/tech/css.png" alt="CSS" w={64} h={64} />
+                      <TechIcon src="/tech/html.png" alt="html" w={64} h={64} />
+                      <TechIcon src="/tech/css.png" alt="css" w={64} h={64} />
+                      <TechIcon src="/tech/JS.png" alt="JS" w={64} h={64} />
+                      <TechIcon src="/tech/next.png" alt="next" w={72} h={72} />
                       <TechIcon
-                        src="/tech/JS.png"
-                        alt="JavaScript"
-                        w={64}
-                        h={64}
-                      />
-                      <TechIcon
-                        src="/tech/next_js.png"
-                        alt="Next.js"
-                        w={72}
-                        h={72}
-                      />
-                      <TechIcon
-                        src="/tech/tailwind_CSS.png"
-                        alt="Tailwind CSS"
+                        src="/tech/tailwind.png"
+                        alt="tailwind"
                         w={72}
                         h={72}
                       />
@@ -576,15 +566,10 @@ export default async function About() {
                     </h3>
                     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                       {/* 경로 대소문자 수정 */}
-                      <TechIcon
-                        src="/tech/node_js.png"
-                        alt="Node.js"
-                        w={64}
-                        h={64}
-                      />
+                      <TechIcon src="/tech/node.png" alt="node" w={64} h={64} />
                       <TechIcon
                         src="/tech/flask.png"
-                        alt="Flask"
+                        alt="flask"
                         w={72}
                         h={72}
                       />
@@ -601,13 +586,13 @@ export default async function About() {
                       <TechIcon src="/tech/GCP.png" alt="GCP" w={72} h={72} />
                       <TechIcon
                         src="/tech/mysql.png"
-                        alt="MySQL"
+                        alt="mysql"
                         w={72}
                         h={72}
                       />
                       <TechIcon
                         src="/tech/unity.png"
-                        alt="Unity"
+                        alt="unity"
                         w={72}
                         h={72}
                       />
