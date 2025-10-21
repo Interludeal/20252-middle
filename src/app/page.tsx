@@ -100,7 +100,7 @@ export default function Home() {
       role: '팀장 (PM)',
       imgSrc: '/team/interludeal.png',
       githubUrl: 'https://github.com/Interludeal',
-      blogUrl: 'https://2025-2-middle-nextjs-rig9.vercel.app/',
+      blogUrl: 'https://20252-middle.vercel.app/',
     },
     {
       name: '곽민경',
