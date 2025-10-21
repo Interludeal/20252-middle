@@ -100,14 +100,14 @@ export default function Home() {
       role: '팀장 (PM)',
       imgSrc: '/team/interludeal.png',
       githubUrl: 'https://github.com/Interludeal',
-      blogUrl: '/about',
+      blogUrl: 'https://2025-2-middle-nextjs-rig9.vercel.app/',
     },
     {
       name: '곽민경',
       role: '팀원 (PA)',
       imgSrc: '/team/kkaturi14.jpg',
       githubUrl: 'https://github.com/kkaturi14',
-      blogUrl: '/',
+      blogUrl: 'https://web-server-mid.vercel.app/',
     },
     {
       name: '박혜수',
@@ -128,7 +128,7 @@ export default function Home() {
       role: '팀원 (PA)',
       imgSrc: '/team/oesp91.jpg',
       githubUrl: 'https://github.com/oesp91',
-      blogUrl: '/',
+      blogUrl: 'https://wsvbp1-ixms.vercel.app/',
     },
   ]
 

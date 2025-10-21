@@ -66,6 +66,7 @@ async function getGithubRepos(): Promise<
     }
 
     const repos = await res.json()
+
     return repos.map(
       (repo: {
         id: number
@@ -521,10 +522,10 @@ export default async function About() {
                       Language
                     </h3>
                     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                      <TechIcon src="/tech/c.png" alt="C" w={64} h={64} />
-                      <TechIcon src="/tech/php.png" alt="PHP" w={72} h={72} />
+                      <TechIcon src="/tech/C.png" alt="C" w={64} h={64} />
+                      <TechIcon src="/tech/PHP.png" alt="PHP" w={72} h={72} />
                       <TechIcon
-                        src="/tech/python.png"
+                        src="/tech/Python.png"
                         alt="Python"
                         w={64}
                         h={64}
@@ -537,8 +538,8 @@ export default async function About() {
                       Frontend
                     </h3>
                     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                      <TechIcon src="/tech/html.png" alt="HTML" w={64} h={64} />
-                      <TechIcon src="/tech/css.png" alt="CSS" w={64} h={64} />
+                      <TechIcon src="/tech/HTML.png" alt="HTML" w={64} h={64} />
+                      <TechIcon src="/tech/CSS.png" alt="CSS" w={64} h={64} />
                       <TechIcon
                         src="/tech/JS.png"
                         alt="JavaScript"
@@ -546,13 +547,13 @@ export default async function About() {
                         h={64}
                       />
                       <TechIcon
-                        src="/tech/next_js.png"
+                        src="/tech/Next_js.png"
                         alt="Next.js"
                         w={72}
                         h={72}
                       />
                       <TechIcon
-                        src="/tech/tailwind_css.png"
+                        src="/tech/Tailwind_CSS.png"
                         alt="Tailwind CSS"
                         w={72}
                         h={72}
@@ -566,13 +567,13 @@ export default async function About() {
                     </h3>
                     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                       <TechIcon
-                        src="/tech/node_js.png"
+                        src="/tech/Node_js.png"
                         alt="Node.js"
                         w={64}
                         h={64}
                       />
                       <TechIcon
-                        src="/tech/flask.png"
+                        src="/tech/Flask.png"
                         alt="Flask"
                         w={72}
                         h={72}
@@ -587,13 +588,13 @@ export default async function About() {
                     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                       <TechIcon src="/tech/GCP.png" alt="GCP" w={72} h={72} />
                       <TechIcon
-                        src="/tech/mysql.png"
+                        src="/tech/MySQL.png"
                         alt="MySQL"
                         w={72}
                         h={72}
                       />
                       <TechIcon
-                        src="/tech/unity.png"
+                        src="/tech/Unity.png"
                         alt="Unity"
                         w={72}
                         h={72}
@@ -682,13 +683,16 @@ export default async function About() {
                   )}
                 </div>
                 {githubData.error && (
-                  <p className="text-sm text-red-500 mt-4">-</p>
+                  <p className="text-sm text-red-500 mt-4">
+                    *API 연결 오류: 환경 변수('.env.local')와 토큰 권한을
+                    확인해주세요.
+                  </p>
                 )}
               </div>
 
               <p className="text-center text-2xl font-bold text-black italic">
                 <span className="cursor-pointer hover:text-blue-600 transition-colors duration-300">
-                  Act as if you have already achieved
+                  &apos;Act as if you have already achieved&apos;
                 </span>
               </p>
             </div>
