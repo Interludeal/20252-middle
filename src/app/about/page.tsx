@@ -528,14 +528,9 @@ export default async function About() {
                     </h3>
                     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                       {/* 경로 대소문자 수정 */}
-                      <TechIcon src="/tech/c.png" alt="C" w={64} h={64} />
-                      <TechIcon src="/tech/php.png" alt="PHP" w={72} h={72} />
-                      <TechIcon
-                        src="/tech/python.png"
-                        alt="Python"
-                        w={64}
-                        h={64}
-                      />
+                      <TechIcon src="/tech/C.png" alt="C" w={64} h={64} />
+                      <TechIcon src="/tech/PHP.png" alt="PHP" w={72} h={72} />
+                      <TechIcon src="/tech/PY.png" alt="PY" w={64} h={64} />
                     </div>
                   </div>
 
@@ -546,13 +541,18 @@ export default async function About() {
                     </h3>
                     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                       {/* 경로 대소문자 수정 */}
-                      <TechIcon src="/tech/html.png" alt="html" w={64} h={64} />
-                      <TechIcon src="/tech/css.png" alt="css" w={64} h={64} />
+                      <TechIcon src="/tech/HTML.png" alt="HTML" w={64} h={64} />
+                      <TechIcon src="/tech/CSS.png" alt="CSS" w={64} h={64} />
                       <TechIcon src="/tech/JS.png" alt="JS" w={64} h={64} />
-                      <TechIcon src="/tech/next.png" alt="next" w={72} h={72} />
                       <TechIcon
-                        src="/tech/tailwind.png"
-                        alt="tailwind"
+                        src="/tech/NEXTJS.png"
+                        alt="NEXTJS"
+                        w={72}
+                        h={72}
+                      />
+                      <TechIcon
+                        src="/tech/TAILWINDCSS.png"
+                        alt="TAILWINDCSS"
                         w={72}
                         h={72}
                       />
@@ -566,13 +566,13 @@ export default async function About() {
                     </h3>
                     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
                       {/* 경로 대소문자 수정 */}
-                      <TechIcon src="/tech/node.png" alt="node" w={64} h={64} />
                       <TechIcon
-                        src="/tech/flask.png"
-                        alt="flask"
-                        w={72}
-                        h={72}
+                        src="/tech/NODEJS.png"
+                        alt="NODEJS"
+                        w={64}
+                        h={64}
                       />
+                      <TechIcon src="/tech/FLA.png" alt="FLA" w={72} h={72} />
                     </div>
                   </div>
 
@@ -585,17 +585,12 @@ export default async function About() {
                       {/* 경로 대소문자 수정 */}
                       <TechIcon src="/tech/GCP.png" alt="GCP" w={72} h={72} />
                       <TechIcon
-                        src="/tech/mysql.png"
-                        alt="mysql"
+                        src="/tech/MYSQL.png"
+                        alt="MYSQL"
                         w={72}
                         h={72}
                       />
-                      <TechIcon
-                        src="/tech/unity.png"
-                        alt="unity"
-                        w={72}
-                        h={72}
-                      />
+                      <TechIcon src="/tech/UNI.png" alt="UNI" w={72} h={72} />
                     </div>
                   </div>
                 </div>
