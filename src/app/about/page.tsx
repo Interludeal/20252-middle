@@ -1,9 +1,11 @@
 import Image from 'next/image'
 import Link from 'next/link'
 
+// === 환경 변수 설정 ===
 const GITHUB_USERNAME = process.env.NEXT_PUBLIC_GITHUB_USERNAME || ''
 const GITHUB_ACCESS_TOKEN = process.env.GITHUB_ACCESS_TOKEN || ''
 
+// === GitHub API 호출 로직 ===
 async function getGitHubData(): Promise<{
   publicRepos: string
   profileUrl: string
@@ -66,7 +68,6 @@ async function getGithubRepos(): Promise<
     }
 
     const repos = await res.json()
-
     return repos.map(
       (repo: {
         id: number
@@ -86,6 +87,7 @@ async function getGithubRepos(): Promise<
   }
 }
 
+// === 데이터 구조 정의 (생략) ===
 const experienceData = [
   { title: '정보보안 동아리 S.C.P 2025 임원', date: '2025.09' },
   { title: '2024 제12회 창업경진대회 참여 및 입상', date: '2024.03' },
@@ -234,6 +236,8 @@ const rightColumn = [
   experienceData[5],
   experienceData[7],
 ]
+
+// === 유틸리티 컴포넌트 ===
 
 const GithubIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg {...props} className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
@@ -481,7 +485,7 @@ export default async function About() {
               </div>
 
               <div
-                className={`bg-white border-2 border-black rounded-2xl p-8 shadow-md ${hoverStyle}`}
+                className={`bg-white border-2 border-black rounded-2xl p-8 ${hoverStyle}`}
               >
                 <h2 className="text-2xl font-bold text-black mb-6">
                   학력 및 경력
@@ -511,21 +515,23 @@ export default async function About() {
               </div>
 
               <div
-                className={`bg-white border-2 border-black rounded-2xl p-8 shadow-md ${hoverStyle}`}
+                className={`bg-white border-2 border-black rounded-2xl p-8 ${hoverStyle}`}
               >
                 <h2 className="text-2xl font-bold text-black mb-6">
                   기술 스택
                 </h2>
                 <div className="space-y-6">
+                  {/* Language */}
                   <div>
                     <h3 className="text-lg font-semibold text-black mb-3">
                       Language
                     </h3>
                     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                      <TechIcon src="/tech/C.png" alt="C" w={64} h={64} />
-                      <TechIcon src="/tech/PHP.png" alt="PHP" w={72} h={72} />
+                      {/* 경로 대소문자 수정 */}
+                      <TechIcon src="/tech/c.png" alt="C" w={64} h={64} />
+                      <TechIcon src="/tech/php.png" alt="PHP" w={72} h={72} />
                       <TechIcon
-                        src="/tech/Python.png"
+                        src="/tech/python.png"
                         alt="Python"
                         w={64}
                         h={64}
@@ -533,13 +539,15 @@ export default async function About() {
                     </div>
                   </div>
 
+                  {/* Frontend */}
                   <div>
                     <h3 className="text-lg font-semibold text-black mb-3">
                       Frontend
                     </h3>
                     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-                      <TechIcon src="/tech/HTML.png" alt="HTML" w={64} h={64} />
-                      <TechIcon src="/tech/CSS.png" alt="CSS" w={64} h={64} />
+                      {/* 경로 대소문자 수정 */}
+                      <TechIcon src="/tech/html.png" alt="HTML" w={64} h={64} />
+                      <TechIcon src="/tech/css.png" alt="CSS" w={64} h={64} />
                       <TechIcon
                         src="/tech/JS.png"
                         alt="JavaScript"
@@ -547,13 +555,13 @@ export default async function About() {
                         h={64}
                       />
                       <TechIcon
-                        src="/tech/Next_js.png"
+                        src="/tech/next_js.png"
                         alt="Next.js"
                         w={72}
                         h={72}
                       />
                       <TechIcon
-                        src="/tech/Tailwind_CSS.png"
+                        src="/tech/tailwind_CSS.png"
                         alt="Tailwind CSS"
                         w={72}
                         h={72}
@@ -561,19 +569,21 @@ export default async function About() {
                     </div>
                   </div>
 
+                  {/* Backend */}
                   <div>
                     <h3 className="text-lg font-semibold text-black mb-3">
                       Backend
                     </h3>
                     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                      {/* 경로 대소문자 수정 */}
                       <TechIcon
-                        src="/tech/Node_js.png"
+                        src="/tech/node_js.png"
                         alt="Node.js"
                         w={64}
                         h={64}
                       />
                       <TechIcon
-                        src="/tech/Flask.png"
+                        src="/tech/flask.png"
                         alt="Flask"
                         w={72}
                         h={72}
@@ -581,20 +591,22 @@ export default async function About() {
                     </div>
                   </div>
 
+                  {/* Other */}
                   <div>
                     <h3 className="text-lg font-semibold text-black mb-3">
                       Other
                     </h3>
                     <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                      {/* 경로 대소문자 수정 */}
                       <TechIcon src="/tech/GCP.png" alt="GCP" w={72} h={72} />
                       <TechIcon
-                        src="/tech/MySQL.png"
+                        src="/tech/mysql.png"
                         alt="MySQL"
                         w={72}
                         h={72}
                       />
                       <TechIcon
-                        src="/tech/Unity.png"
+                        src="/tech/unity.png"
                         alt="Unity"
                         w={72}
                         h={72}
@@ -605,7 +617,7 @@ export default async function About() {
               </div>
 
               <div
-                className={`bg-white border-2 border-black rounded-2xl p-8 shadow-md ${hoverStyle}`}
+                className={`bg-white border-2 border-black rounded-2xl p-8 ${hoverStyle}`}
               >
                 <h2 className="text-2xl font-bold text-black mb-6">
                   개인 프로젝트
@@ -645,7 +657,7 @@ export default async function About() {
               </div>
 
               <div
-                className={`bg-white border-2 border-black rounded-2xl p-8 shadow-md ${hoverStyle}`}
+                className={`bg-white border-2 border-black rounded-2xl p-8 ${hoverStyle}`}
               >
                 <h2 className="text-2xl font-bold text-black mb-6 flex items-center space-x-2">
                   <span className="text-gray-800">GitHub Repositories</span>
@@ -684,8 +696,8 @@ export default async function About() {
                 </div>
                 {githubData.error && (
                   <p className="text-sm text-red-500 mt-4">
-                    *API 연결 오류: 환경 변수('.env.local')와 토큰 권한을
-                    확인해주세요.
+                    *API 연결 오류: 환경 변수(&apos;.env.local&apos;)와 토큰
+                    권한을 확인해주세요.
                   </p>
                 )}
               </div>
